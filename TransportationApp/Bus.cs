@@ -11,8 +11,62 @@ namespace C_sharp_App_ArielM.TransportationApp
         private readonly int doors;
         private bool bellStop = false;
 
+        
         public int Doors => doors;
-
         public bool BellStop { get => bellStop; set => bellStop = value; }
+        public Bus(int line, int id, int maxSpeed, int seats, int doors) : base(line, id, maxSpeed, seats)
+        {
+            this.doors = doors;
+            if (MaxSpeed > maxSpeed)
+                MaxSpeed = 120;
+            else
+                MaxSpeed = maxSpeed;
+        }
+        public Bus() : base()
+        {
+            this.doors = 1;
+        }
+        public override int MaxSpeed
+        {
+            get => MaxSpeed;
+            set
+            {
+                if (value <= 120)
+                {
+                    MaxSpeed = value;
+                }
+
+            }
+        }
+        public override bool CalculateHasRoom()
+        {
+            return HasRoom = (Math.Round(Seats * 1.1) - CurrentPassengers) > 0;
+        }
+
+        public override void UploadPassengers(int passengers)
+        {
+            if (CalculateHasRoom())
+            {
+                int maxPassengers = (int)Math.Round(Seats * 1.1);
+                int totalPassengers = CurrentPassengers + passengers;
+
+                if (totalPassengers <= maxPassengers)
+                {
+                    CurrentPassengers += passengers;
+                    HasRoom = totalPassengers < maxPassengers;
+                    RejecetedPassengers = 0;
+                }
+                else
+                {
+                    RejecetedPassengers = totalPassengers - maxPassengers;
+                    CurrentPassengers = maxPassengers;
+                    HasRoom = false;
+                }
+            }
+        }
+        public override string ToString()
+        {
+            return $"{base.ToString()} => Bus: Doors={doors}, BellStop={bellStop}";
+        }
     }
 }
