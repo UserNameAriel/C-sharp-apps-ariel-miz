@@ -10,7 +10,7 @@ namespace C_sharp_App_ArielM.TransportationApp
     {
         private int line = 0;
         private int id = 0;
-        private int maxSpeed = 0;
+        protected int maxSpeed = 0;
         private int currentPassengers = 0;
         private int seats = 0;
         private int rejecetedPassengers = 0;
@@ -58,7 +58,7 @@ namespace C_sharp_App_ArielM.TransportationApp
         }
         public virtual bool CalculateHasRoom()
         {
-            return HasRoom = Seats < CurrentPassengers;
+            return  HasRoom = Seats - CurrentPassengers > 0;
 
         }
 
@@ -69,11 +69,12 @@ namespace C_sharp_App_ArielM.TransportationApp
                 if (CurrentPassengers + SumOfPassengers <= Seats)
                 {
                     CurrentPassengers += SumOfPassengers;
-                    HasRoom = CurrentPassengers < Seats;
+                    HasRoom = CurrentPassengers == Seats;
                 }
                 else
                 {
-                    CurrentPassengers = Seats;
+                    rejecetedPassengers = (CurrentPassengers + SumOfPassengers) - Seats;
+                    currentPassengers = seats;
                     HasRoom = false;
                 }
             }
@@ -82,7 +83,9 @@ namespace C_sharp_App_ArielM.TransportationApp
                 Console.WriteLine("No room for additional passengers.");
             }
         }
+      
 
+    
         public override string ToString()
         {
             return $"PublicVehicle: Line={Line}, Id={Id}, MaxSpeed={MaxSpeed}, CurrentPassengers={CurrentPassengers}, Seats={Seats}";

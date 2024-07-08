@@ -26,18 +26,18 @@ namespace C_sharp_App_ArielM.TransportationApp
         {
             this.doors = 1;
         }
-        public override int MaxSpeed
+       public override int MaxSpeed
         {
-            get => MaxSpeed;
+            get => this.maxSpeed;
             set
             {
                 if (value <= 120)
                 {
-                    MaxSpeed = value;
+                    this.maxSpeed = value;
                 }
 
-            }
-        }
+            }
+        }
         public override bool CalculateHasRoom()
         {
             return HasRoom = (Math.Round(Seats * 1.1) - CurrentPassengers) > 0;
