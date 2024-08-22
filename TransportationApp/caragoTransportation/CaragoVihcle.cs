@@ -20,20 +20,18 @@ namespace C_sharp_App_ArielM.TransportationApp.caragoTransportation
             public StorageStructure CurrentPort { get; set; }
             public int TravelID { get; set; }
             public List<IPortable> CargoItems { get; set; }
-            public Dictionary<string, double> ExpectedPayment { get; set; }
             public int DistanceToNextPort { get; set; }
             public IShippingPriceCalculator PriceCalculator { get; set; }
 
-            public CargoVehicle(double maxWeight, double maxVolume)
+            public CargoVehicle(regularClsses.Driver driver, double maxWeight, double maxVolume)
             {
                 MaxWeight = maxWeight;
                 MaxVolume = maxVolume;
                 CargoItems = new List<IPortable>();
-                ExpectedPayment = new Dictionary<string, double>();
                 this.TravelID = new Random().Next(1000, 10000);
             }
 
-            public bool Load(IPortable item)
+            public virtual bool Load(IPortable item)
             {
                 if (IsOverload(item.GetWeight(), item.GetVolume()))
                 {
@@ -44,7 +42,7 @@ namespace C_sharp_App_ArielM.TransportationApp.caragoTransportation
                 return true;
             }
 
-            public bool Load(List<IPortable> items)
+            public virtual bool Load(List<IPortable> items)
             {
                 for (int i = 0; i < items.Count; i++)
                 {
@@ -56,7 +54,7 @@ namespace C_sharp_App_ArielM.TransportationApp.caragoTransportation
                 return true;
             }
 
-            public bool Unload(IPortable item)
+            public virtual bool Unload(IPortable item)
             {
                 if (CargoItems.Remove(item))
                 {
@@ -65,7 +63,7 @@ namespace C_sharp_App_ArielM.TransportationApp.caragoTransportation
                 return false;
             }
 
-            public bool Unload(List<IPortable> items)
+            public virtual bool Unload(List<IPortable> items)
             {
                 for (int i = 0; i < items.Count; i++)
                 {
@@ -76,8 +74,8 @@ namespace C_sharp_App_ArielM.TransportationApp.caragoTransportation
                 }
                 return true;
             }
-            //מסיר את כל הרשימה 
-            public bool Unload()
+            
+            public virtual bool Unload()
             {
                 CargoItems.Clear();
                 return true;
@@ -142,19 +140,34 @@ namespace C_sharp_App_ArielM.TransportationApp.caragoTransportation
                 IsReadyToDrive = true;
             }
 
+
             public void CalculateFinalPrice()
             {
-
                 for (int i = 0; i < CargoItems.Count; i++)
                 {
-                    double itemPrice = PriceCalculator.CalculatePrice(CargoItems[i]);
-                    ExpectedPayment[CargoItems[i].GetName()] = itemPrice;
+                    IPortable item = CargoItems[i];
+
+                    string itemName = item.GetType().Name; 
+
+                    double itemPrice = PriceCalculator.CalculatePrice(item, DistanceToNextPort, CargoType.Airplane);
+
                 }
             }
 
             public void TravelToNextPort()
             {
-                // Logic to travel to the next port, to be implemented as needed
+               if (IsReadyToDrive)
+                {
+                    Console.WriteLine("the car can drive to the next port");
+                    return;
+                }
+                CurrentPort = NextPort;
+
+                NextPort = null;
+
+                IsReadyToDrive = false;
+
+                Console.WriteLine("ur in the next port ");
             }
 
             public abstract string GetPricingList();

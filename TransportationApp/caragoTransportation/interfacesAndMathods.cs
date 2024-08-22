@@ -43,6 +43,7 @@ namespace C_sharp_App_ArielM.TransportationApp.caragoTransportation
             public string City { get; set; }
             public string Street { get; set; }
             public int Number { get; set; }
+            public CargoType PortType { get; set; }
             public double MaxVolume { get; set; }
             public double MaxWeight { get; set; }
 
